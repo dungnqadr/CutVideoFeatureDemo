@@ -1,4 +1,5 @@
 import ai.instavision.ffmpegkit.FFmpegKit
+import ai.instavision.ffmpegkit.ReturnCode
 import android.content.Context
 import java.io.File
 
@@ -43,7 +44,7 @@ fun cutMultipleSegments(
     val cmdMerge = "-f concat -safe 0 -i ${listFile.absolutePath} -c copy $output"
     val session = FFmpegKit.execute(cmdMerge)
 
-    if (session.returnCode.isValueSuccess) {
+    if (ReturnCode.isSuccess(session.returnCode)) {
         onDone(true, output)
     } else {
         onDone(false, null)

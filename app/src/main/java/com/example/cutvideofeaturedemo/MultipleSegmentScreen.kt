@@ -25,6 +25,7 @@ import com.example.cutvideofeaturedemo.utils.getVideoDuration
 import cutMultipleSegments
 import kotlinx.coroutines.launch
 import kotlin.math.max
+import kotlin.math.min
 
 @Composable
 fun MultiCutScreen() {
@@ -39,6 +40,7 @@ fun MultiCutScreen() {
 
     var pickedUri by remember { mutableStateOf<Uri?>(null) }
     var duration by remember { mutableStateOf(0f) }
+    var range by remember { mutableStateOf(0f..5f) }
 
     // Pick Video
     val pickVideo =
@@ -49,6 +51,8 @@ fun MultiCutScreen() {
             val dSec = getVideoDuration(context, uri)
             duration = max(dSec, 1f)
 
+            range = 0f..min(duration, 5f)
+
             Toast.makeText(context, "Video dài: ${duration.toInt()}s", Toast.LENGTH_SHORT).show()
 
         }
@@ -58,20 +62,20 @@ fun MultiCutScreen() {
 
         Text("Cut 1: ${cut1Start}s → ${cut1End}s")
         RangeSlider(
-            value = cut1Start..cut1End,
+            value = range,
             onValueChange = { range ->
-                cut1Start = range.start
-                cut1End = range.endInclusive
+                cut1Start = 2f
+                cut1End = 3f
             },
             valueRange = 0f..duration
         )
 
         Text("Cut 2: ${cut2Start}s → ${cut2End}s")
         RangeSlider(
-            value = cut2Start..cut2End,
+            value = range,
             onValueChange = { range ->
-                cut2Start = range.start
-                cut2End = range.endInclusive
+                cut2Start = 5f
+                cut2End = 7f
             },
             valueRange = 0f..duration
         )
@@ -86,9 +90,15 @@ fun MultiCutScreen() {
                 ).sortedBy { it.first } // sort theo start time
 
 
-                val inputPath = copyUriToCache(context, uri, "crop_input_${System.currentTimeMillis()}.mp4")
+                val inputPath =
+                    copyUriToCache(context, uri, "segment_input_${System.currentTimeMillis()}.mp4")
 
-                cutMultipleSegments(context, inputPath.absolutePath, cuts, duration) { success, output ->
+                cutMultipleSegments(
+                    context = context,
+                    inputPath = inputPath.absolutePath,
+                    cuts = cuts,
+                    duration = duration
+                ) { success, output ->
                     result = if (success) "Xuất thành công: $output" else "Lỗi khi export"
                 }
             }
