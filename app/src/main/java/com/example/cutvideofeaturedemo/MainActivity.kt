@@ -23,7 +23,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CutVideoFeatureDemoTheme {
                 // CutVideoScreen()
-                CropVideoScreen()
+                // CropVideoScreen()
+                MultiCutScreen()
             }
         }
     }
