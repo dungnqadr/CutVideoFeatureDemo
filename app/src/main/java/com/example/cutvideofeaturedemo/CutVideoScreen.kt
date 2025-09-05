@@ -57,19 +57,27 @@ fun CutVideoScreen() {
         }
 
     Column(Modifier.padding(16.dp)) {
-        Button(onClick = { pickVideo.launch("video/*") }) { Text("Chọn video") }
+        Button(onClick = { pickVideo.launch("video/*") }) { Text("Pick Video") }
 
         Spacer(Modifier.height(12.dp))
 
+        // When we has the video
         if (pickedUri != null && duration > 0f) {
-            Text("Khoảng cắt: ${formatHms(range.start)} → ${formatHms(range.endInclusive)}")
+            Text("Range: ${formatHms(range.start)} → ${formatHms(range.endInclusive)}")
             RangeSlider(
                 value = range,
                 onValueChange = { r ->
-                    val minGap = 1f // tối thiểu 1 giây
+                    val minGap = 1f // Minimum 1 second
+
+                    // Keep the slide in the range
                     val clamped = r.start.coerceIn(0f, duration)..
                             r.endInclusive.coerceIn(0f, duration)
 
+                    /**
+                     * If user tries to drag thumbs too close (< 1 second):
+                     * Lock end = start + 1 (but ≤ duration).
+                     * Otherwise, accept the clamped values.
+                     */
                     range = if (clamped.endInclusive - clamped.start < minGap) {
                         val start = clamped.start
                         (start)..min(duration, start + minGap)

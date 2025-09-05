@@ -25,6 +25,8 @@ suspend fun cutAndSaveToGallery(
     withContext(Dispatchers.IO) {
         Log.d("DEBUG", "Source: $source")
         val input = copyUriToCache(context, source, "input_${System.currentTimeMillis()}.mp4")
+
+        // Prepare the empty file
         val output = File(context.cacheDir, "cut_${System.currentTimeMillis()}.mp4")
 
         // Session
