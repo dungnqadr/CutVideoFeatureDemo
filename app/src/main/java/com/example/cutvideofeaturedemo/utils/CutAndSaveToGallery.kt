@@ -22,13 +22,14 @@ suspend fun cutAndSaveToGallery(
     endSec: Float
 ): Boolean =
     withContext(Dispatchers.IO) {
-        val input = copyUriToCache(context, source, "input_${System.currentTimeMillis()}.mp4")
+        val input = copyUriToCache(context, source, "input_${System.currentTimeMillis()}.mov")
         val output = File(context.cacheDir, "cut_${System.currentTimeMillis()}.mp4")
 
         // Session
         val start = String.format(Locale.US,"%.3f", startSec)
         val end = String.format(Locale.US,"%.3f", endSec)
-        val cmd = "-i \"${input.absolutePath}\" -ss $start -to $end -c copy \"${output.absolutePath}\""
+
+        val cmd = "-y -i \"${input.absolutePath}\" -ss $start -to $end -map 0:v -map 0:a -c:v mpeg4 \"${output.absolutePath}\""
 
         val session = FFmpegKit.execute(cmd)
 
