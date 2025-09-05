@@ -2,6 +2,7 @@ package com.example.cutvideofeaturedemo.utils
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -13,5 +14,6 @@ suspend fun copyUriToCache(context: Context, uri: Uri, nameHint: String): File =
         context.contentResolver.openInputStream(uri)!!.use { input ->
             FileOutputStream(out).use { input.copyTo(it) }
         }
+        Log.d("DEBUG", out.toString())
         out
     }

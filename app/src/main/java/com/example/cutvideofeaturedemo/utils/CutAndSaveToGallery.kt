@@ -7,6 +7,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,18 +23,25 @@ suspend fun cutAndSaveToGallery(
     endSec: Float
 ): Boolean =
     withContext(Dispatchers.IO) {
-        val input = copyUriToCache(context, source, "input_${System.currentTimeMillis()}.mov")
+        Log.d("DEBUG", "Source: $source")
+        val input = copyUriToCache(context, source, "input_${System.currentTimeMillis()}.mp4")
         val output = File(context.cacheDir, "cut_${System.currentTimeMillis()}.mp4")
 
         // Session
         val start = String.format(Locale.US,"%.3f", startSec)
         val end = String.format(Locale.US,"%.3f", endSec)
 
+        Log.d("DEBUG", "Input path: ${input.absolutePath}")
+        Log.d("DEBUG", "Output path: ${output.absolutePath}")
+        Log.d("DEBUG", "Start path: $start")
+        Log.d("DEBUG", "End path: $end")
+
         val cmd = "-y -i \"${input.absolutePath}\" -ss $start -to $end -map 0:v -map 0:a -c:v mpeg4 \"${output.absolutePath}\""
 
         val session = FFmpegKit.execute(cmd)
 
         // Return Code
+        Log.d("DEBUG", "Return Code: ${ReturnCode.isSuccess(session.returnCode)}")
         if (!ReturnCode.isSuccess(session.returnCode)) return@withContext false
 
         val resolver = context.contentResolver
