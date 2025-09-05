@@ -40,7 +40,7 @@ fun cutMultipleSegments(
     val listFile = File(cacheDir, "list.txt")
     listFile.writeText(segments.joinToString("\n") { "file '$it'" })
 
-    val output = File(cacheDir, "merged.mp4").absolutePath
+    val output = File(cacheDir, "merged_${System.currentTimeMillis()}.mp4").absolutePath
     val cmdMerge = "-f concat -safe 0 -i ${listFile.absolutePath} -c copy $output"
     val session = FFmpegKit.execute(cmdMerge)
 
