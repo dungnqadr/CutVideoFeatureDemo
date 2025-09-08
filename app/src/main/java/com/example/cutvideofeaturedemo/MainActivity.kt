@@ -22,9 +22,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CutVideoFeatureDemoTheme {
-                // CutVideoScreen()
+                CutVideoScreen()
                 // CropVideoScreen()
-                MultiCutScreen()
+                // MultiCutScreen()
             }
         }
     }

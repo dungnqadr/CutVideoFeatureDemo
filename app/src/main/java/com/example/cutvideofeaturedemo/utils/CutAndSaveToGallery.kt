@@ -38,7 +38,7 @@ suspend fun cutAndSaveToGallery(
         Log.d("DEBUG", "Start path: $start")
         Log.d("DEBUG", "End path: $end")
 
-        val cmd = "-y -i \"${input.absolutePath}\" -ss $start -to $end -map 0:v -map 0:a -c:v mpeg4 \"${output.absolutePath}\""
+        val cmd = "-y -i \"${input.absolutePath}\" -ss $start -to $end -map 0:v -map 0:a? -c:v h264 -c:a aac \"${output.absolutePath}\""
 
         val session = FFmpegKit.execute(cmd)
 
